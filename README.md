@@ -3,7 +3,7 @@ import tkinter as tk
 from tkinter import messagebox, ttk
 import sqlite3
 
-# Initialize the database
+
 def init_db():
     with sqlite3.connect('customers.db') as conn:
         cursor = conn.cursor()
@@ -17,21 +17,18 @@ def init_db():
         )
         ''')
 
-# Fetch all customers
 def fetch_customers():
     with sqlite3.connect('customers.db') as conn:
         cursor = conn.cursor()
         cursor.execute('SELECT * FROM customers')
         return cursor.fetchall()
 
-# Update the Treeview display
 def display_customers():
     for row in tree.get_children():
         tree.delete(row)
     for customer in fetch_customers():
         tree.insert('', 'end', values=customer)
 
-# CRUD Operations
 def add_customer():
     data = (entry_name.get(), entry_address.get(), entry_mobile.get(), entry_category.get())
     if any(not field for field in data):
@@ -82,17 +79,16 @@ def display_customer():
     else:
         messagebox.showinfo("Error", "Customer ID not found.")
 
-# Main application window
 root = tk.Tk()
 root.title("Customer Management System")
 root.geometry("600x500")
 root.configure(bg="lightpink")
 
-# Input frame
+
 frame = tk.Frame(root, bg="lightcoral", bd=5, relief=tk.RAISED)
 frame.pack(pady=10, padx=10, fill=tk.BOTH, expand=True)
 
-# Entry fields
+
 labels = ["Customer ID:", "Name:", "Address:", "Mobile No:", "Category:"]
 entries = [tk.Entry(frame) for _ in labels]
 entries[4] = ttk.Combobox(frame, values=["New", "Regular", "Premium"], state="readonly")
@@ -103,13 +99,12 @@ for i, label in enumerate(labels):
 
 entry_id, entry_name, entry_address, entry_mobile, entry_category = entries
 
-# Action buttons
+
 button_texts = ["Display Customer", "Add Customer", "Update Customer", "Delete Customer"]
 commands = [display_customer, add_customer, modify_customer, delete_customer]
 for i, text in enumerate(button_texts):
     tk.Button(frame, text=text, command=commands[i], bg='lightgreen', font=("Arial", 10), width=20).grid(row=5+i, columnspan=2, pady=5)
 
-# Treeview to display customers
 columns = ("Customer ID", "Name", "Address", "Mobile No", "Category")
 tree = ttk.Treeview(root, columns=columns, show='headings', height=10)
 for col in columns:
@@ -117,9 +112,8 @@ for col in columns:
     tree.column(col, anchor="center")
 tree.pack(pady=10, fill=tk.BOTH, expand=True)
 
-# Initialize the database and display customers
 init_db()
 display_customers()
 
-# Start the application
+
 root.mainloop()
